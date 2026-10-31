@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lead name cleaner: fix company names and first names before they go into a cold email</title>
+  <meta name="description" content="Upload a lead CSV and get it back with company_clean, first_name_clean and a needs_review flag. Strips Inc and LLC, fixes ALL CAPS, removes Dr and emoji, catches info@ and N/A. Runs in your browser; the file never leaves your computer.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Lead name cleaner</h1>
+      <p class="lede">"Hi DR MATTHEW, saw that ACME HOLDINGS, LLC is hiring" gives away a mail merge in the first line. Upload your list and get it back with a clean company name, a clean first name, and a flag on every row a person should read before it sends.</p>
+    </header>
+
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" class="tab active" data-tab="csv" aria-selected="true">Clean a CSV</button>
+      <button type="button" role="tab" class="tab" data-tab="paste" aria-selected="false">Paste names</button>
+    </div>
+
+    <section id="tab-csv" class="panel">
+      <label class="drop" id="drop">
+        <input type="file" id="file" accept=".csv,text/csv" hidden>
+        <strong>Drop a CSV here</strong> or click to choose one
+        <span class="hint">Any export from Apollo, Clay, Smartlead, HubSpot or a spreadsheet. It stays on your computer.</span>
+      </label>
+      <div id="mapping" hidden>
+        <p class="filename" id="filename"></p>
+        <div class="cols">
+          <div><label for="col-company">Company column</label><select id="col-company"></select></div>
+          <div><label for="col-first">First name column</label><select id="col-first"></select></div>
+          <div><label for="col-last">Last name column</label><select id="col-last"></select></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-paste" class="panel" hidden>
+      <div class="row">
+        <div class="field">
+          <label for="paste-kind">What are you pasting?</label>
+          <select id="paste-kind">
+            <option value="company">Company names</option>
+            <option value="first">First names</option>
+          </select>
+        </div>
+      </div>
+      <label for="paste">One per line</label>
+      <textarea id="paste" rows="7" spellcheck="false" placeholder="Ajax Turner Company, Inc.&#10;ABN TECH CORP&#10;318, Inc dba Hamiltons Bud and Bloom&#10;Self-employed"></textarea>
+      <button type="button" id="paste-go">Clean</button>
+    </section>
+
+    <section id="summary" hidden>
+      <div class="counts" id="counts"></div>
+      <div class="actions">
+        <label class="toggle"><input type="checkbox" id="only-changed" checked> Only rows that changed or need review</label>
+        <button type="button" id="download">Download cleaned CSV</button>
+      </div>
+    </section>
+
+    <section id="table-wrap" hidden>
+      <table>
+        <thead id="thead"></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <p class="more" id="more"></p>
+    </section>
+
+    <section class="notes">
+      <h2>What it does</h2>
+      <div class="two">
+        <div>
+          <h3>Company names</h3>
+          <ul>
+            <li>Strips Inc, LLC, Ltd, Corp, Company, GmbH, Pty Ltd and the rest</li>
+            <li>Cuts taglines after <code>|</code> or a dash, and city-and-state tails</li>
+            <li>Takes the trading name after "dba"</li>
+            <li>Drops (parentheses), ™ and ®, and a second-language duplicate</li>
+            <li>Fixes ALL CAPS and all lowercase, keeps HubSpot and IBM as they are</li>
+            <li>Leaves "Med Spa" and "Valley AG" alone</li>
+            <li>Returns blank for N/A, Self-employed, Retired, Confidential</li>
+          </ul>
+        </div>
+        <div>
+          <h3>First names</h3>
+          <ul>
+            <li>Removes Dr, Mr, Ms, MD, PhD, Jr, emoji and stars</li>
+            <li>Uses the nickname: Kathryn (Katie) becomes Katie</li>
+            <li>Cuts a full name or a hiring notice down to the first name</li>
+            <li>Fixes PAUL and javonne, keeps DeAndrea and O'Brien</li>
+            <li>Flags Admin, Info, Sales, single initials, and a name that's really the company</li>
+            <li>Keeps names in other scripts as written, flagged for review</li>
+          </ul>
+        </div>
+      </div>
+      <p><b>needs_review = yes</b> means a person should look before the row sends. A blank is never filled with "there" or "your team": a row with no usable name usually isn't a real person, and a generic greeting just sends a worse email.</p>
+      <p class="privacy">Everything runs in your browser. Your file is never uploaded anywhere.</p>
+    </section>
+
+    <footer>
+      Built by <a href="https://trav54219.github.io/gtm-engineering-portfolio/">Travis Heurtelou</a>, GTM engineer · <a href="https://github.com/Trav54219/lead-name-cleaner">Source on GitHub</a> · Also: <a href="https://trav54219.github.io/domain-health/">Domain health</a> · MIT
+    </footer>
+  </main>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

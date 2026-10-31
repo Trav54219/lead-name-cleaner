@@ -1,0 +1,8 @@
+{
+  "name": "lead-name-cleaner",
+  "version": "1.0.0",
+  "type": "module",
+  "bin": { "lead-name-cleaner": "cli.mjs" },
+  "scripts": { "test": "node --test" },
+  "license": "MIT"
+}
